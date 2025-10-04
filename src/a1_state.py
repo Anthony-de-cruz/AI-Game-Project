@@ -31,8 +31,7 @@ class State:
         -------
         List (copy)
         '''
-        grid_copy = [row[:] for row in self.grid]
-        return grid_copy
+        return [row[:] for row in self.grid]
     
     def moves(self):
         '''
@@ -40,6 +39,13 @@ class State:
         -------
         A generator of all possible next states
         '''
+        for i in range(len(self.grid)):
+            for j in range (len(self.grid[i])):
+                if self.grid[i][j] > 0: # An active cell
+                    new_grid = self.clone() 
+                    new_grid[i][j] -= 1
+                    yield State(new_grid)
+        
         
         
 grid = [[1,1,0,2],
@@ -48,4 +54,7 @@ grid = [[1,1,0,2],
         [0,0,1,1]]
 
 st = State(grid)
-print(st) 
+
+for next_state in st.moves():
+    print(next_state)
+    print()
