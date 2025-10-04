@@ -11,7 +11,6 @@ Includes a State class for Task 1
 """
 
 class State:
-    size = 5
     
     def __init__(self,grid):
         '''
@@ -21,9 +20,32 @@ class State:
 
         '''
         
-        # Check for error with assert
-        assert(len(grid) == State.size)
         self.grid = grid
         
     def __str__(self):
-        return self.grid
+        return f'{self.grid}'
+    
+    def clone(self):
+        '''
+        Returns
+        -------
+        List (copy)
+        '''
+        grid_copy = [row[:] for row in self.grid]
+        return grid_copy
+    
+    def moves(self):
+        '''
+        Returns
+        -------
+        A generator of all possible next states
+        '''
+        
+        
+grid = [[1,1,0,2],
+        [1,1,0,0],
+        [0,1,1,1],
+        [0,0,1,1]]
+
+st = State(grid)
+print(st) 
