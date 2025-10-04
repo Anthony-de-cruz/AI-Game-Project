@@ -23,7 +23,8 @@ class State:
         self.grid = grid
         
     def __str__(self):
-        return f'{self.grid}'
+        return '\n'.join(' '.join(str(cell) for cell in row) for row in self.grid)
+
     
     def clone(self):
         '''
