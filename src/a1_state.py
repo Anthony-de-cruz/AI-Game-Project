@@ -54,6 +54,8 @@ grid = [[1,1,0,2],
 
 st = State(grid)
 
+print(f'The Original state is : \n{st}')
+print('\nThe next possible moves are : \n')
 for next_state in st.moves():
     print(next_state)
     print()
