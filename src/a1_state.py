@@ -45,9 +45,7 @@ class State:
                     new_grid = self.clone() 
                     new_grid[i][j] -= 1
                     yield State(new_grid)
-        
-        
-        
+           
 grid = [[1,1,0,2],
         [1,1,0,0],
         [0,1,1,1],
