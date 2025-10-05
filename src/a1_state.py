@@ -8,6 +8,11 @@ Includes a State class for Task 1
 
 @author: A3 REPLACE WITH OUR STUDENT ID'S :(12345, 5678, and 89123)
 @date:   04/10/2025
+
+TODO (Optional):
+    - check if a cell is active
+    - check if a cell is a hinger
+    - more utility methods
 """
 
 class State:
