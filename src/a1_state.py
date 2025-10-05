@@ -81,6 +81,30 @@ class State:
     
         return active_regions
 
+    def numHingers(self):
+        """
+        Returns 
+        --------
+        the number of hinger cells currently on the board
+        """
+        hingers = 0
+        current_regions = self.numRegions()  # Current number of active regions
+        rows = len(self.grid)
+        cols = len(self.grid[0])
+        
+        for i in range(rows):
+            for j in range(cols):
+                if self.grid[i][j] == 1:  # If an active cell
+                    # Simulate removing this counter
+                    new_grid = self.clone()  # Clone the grid
+                    new_grid[i][j] = 0
+                    new_state = State(new_grid)
+                    
+                    if new_state.numRegions() > current_regions:
+                        hingers += 1
+                        
+        return hingers
+
 
 
     
@@ -89,12 +113,12 @@ class State:
            
 grid = [[1,1,0,2],
         [1,1,0,0],
-        [0,1,1,1],
+        [0,0,1,1],
         [0,0,1,1]]
 
 st = State(grid)
 print("The number of active regions is:", st.numRegions())
-print("The number of hingers cells currently on the board is :", )
+print("The number of hingers cells currently on the board is :", st.numHingers() )
 print(f'The Original state is : \n{st}')
 print('\nThe next possible moves are : \n')
 for next_state in st.moves():
