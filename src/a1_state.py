@@ -110,17 +110,20 @@ class State:
     
 
         
-           
-grid = [[1,1,0,2],
-        [1,1,0,0],
-        [0,0,1,1],
-        [0,0,1,1]]
+def tester():         
+    grid = [[1,1,0,2],
+            [1,1,0,0],
+            [0,0,1,1],
+            [0,0,1,1]]
+    
+    st = State(grid)
+    print("The number of active regions is:", st.numRegions())
+    print("The number of hingers cells currently on the board is :", st.numHingers() )
+    print(f'The Original state is : \n{st}')
+    print('\nThe next possible moves are : \n')
+    for next_state in st.moves():
+        print(next_state)
+        print()
 
-st = State(grid)
-print("The number of active regions is:", st.numRegions())
-print("The number of hingers cells currently on the board is :", st.numHingers() )
-print(f'The Original state is : \n{st}')
-print('\nThe next possible moves are : \n')
-for next_state in st.moves():
-    print(next_state)
-    print()
+if __name__=='__main__':
+    tester()
