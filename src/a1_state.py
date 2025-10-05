@@ -48,40 +48,43 @@ class State:
                     yield State(new_grid)
                     
     def numRegions(self):
-        '''
+        """
         Returns
         -------
-        Number of active regions on the board
-        '''
-        row = len(self.grid)
-        col = len(self.grid[0])
-        
-        visited = []
+        The number of active regions on the board
+        """
+        rows = len(self.grid)
+        cols = len(self.grid[0])
+        visited = [[False for _ in range(cols)] for _ in range(rows)] # 2D Array of False to mirror the board dimensions
         active_regions = 0
-        
-        # Loop over all cells
-        for i in range(row):
-            for j in range(col):
-                if self.grid[i][j] > 0 and (i,j) not in visited: # if active and not visited yet
-                    active_regions += 1
-                    stack = [(i,j)]
-                    
-                    #dfs
+    
+        for i in range(rows):
+            for j in range(cols):
+                if self.grid[i][j] > 0 and not visited[i][j]:
+                    # DFS from this cell
+                    stack = [(i, j)]
                     while stack:
-                        a,b = stack.pop()
-                        if (a,b) not in visited:
-                            visited.append((a,b))
-                            # Find neighours of (a,b)
-                            for x in range(row):
-                                for y in range(col):
-                                    if (x,y) not in visited and self.grid[x][y] > 0: # if active and not visited
-                                        # max(∣a−x∣,∣b−y∣)=1 check for neighbouring cells
-                                        if max(abs(a-x), abs(b-y)) == 1:
-                                            stack.append((x,y))
+                        row, col = stack.pop()
+                        if not visited[row][col]:
+                            visited[row][col] = True
+                            # Check all 8 neighbors of current cell
+                            for row_offset in [-1, 0, 1]:
+                                for col_offset in [-1, 0, 1]:
+                                    if row_offset == 0 and col_offset == 0:
+                                        continue
+                                    neighbor_row = row + row_offset
+                                    neighbor_col = col + col_offset
+                                    if 0 <= neighbor_row < rows and 0 <= neighbor_col < cols:
+                                        if self.grid[neighbor_row][neighbor_col] > 0 and not visited[neighbor_row][neighbor_col]:
+                                            stack.append((neighbor_row, neighbor_col))
+                    active_regions += 1  
+    
         return active_regions
-                            
-                    
-                
+
+
+
+    
+
         
            
 grid = [[1,1,0,2],
@@ -91,6 +94,7 @@ grid = [[1,1,0,2],
 
 st = State(grid)
 print("The number of active regions is:", st.numRegions())
+print("The number of hingers cells currently on the board is :", )
 print(f'The Original state is : \n{st}')
 print('\nThe next possible moves are : \n')
 for next_state in st.moves():
