@@ -66,25 +66,25 @@ class State:
         for i in range(rows):
             for j in range(cols):
                 if self.grid[i][j] > 0 and not visited[i][j]:
-                    # DFS from this cell
+                    active_regions += 1
                     stack = [(i, j)]
+    
                     while stack:
                         row, col = stack.pop()
                         if not visited[row][col]:
                             visited[row][col] = True
-                            # Check all 8 neighbors of current cell
-                            for row_offset in [-1, 0, 1]:
-                                for col_offset in [-1, 0, 1]:
-                                    if row_offset == 0 and col_offset == 0:
-                                        continue
-                                    neighbor_row = row + row_offset
-                                    neighbor_col = col + col_offset
-                                    if 0 <= neighbor_row < rows and 0 <= neighbor_col < cols:
-                                        if self.grid[neighbor_row][neighbor_col] > 0 and not visited[neighbor_row][neighbor_col]:
+                            # Check all possible surrounding cells using the max method
+                            for neighbor_row in range(max(0, row - 1), min(rows, row + 2)):
+                                for neighbor_col in range(max(0, col - 1), min(cols, col + 2)):
+                                    # Use to ensure it's a neighbor where a -x = row distance (vert) and b - y is column distance (hor)
+                                    if max(abs(row - neighbor_row), abs(col - neighbor_col)) == 1:
+                                        if (
+                                            self.grid[neighbor_row][neighbor_col] > 0
+                                            and not visited[neighbor_row][neighbor_col]
+                                        ):
                                             stack.append((neighbor_row, neighbor_col))
-                    active_regions += 1  
-    
         return active_regions
+
 
     def numHingers(self):
         """
