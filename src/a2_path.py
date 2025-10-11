@@ -10,16 +10,16 @@ Includes a State class for Task 2
 @date:   11/10/2025
 """
 
-def path_BFS(start,end):
+def path_BFS(start,end): # Anthony?
     pass
 
-def path_DFS(start,end):
+def path_DFS(start,end): # Josh
     pass
 
-def path_IDDFS(start,end):
+def path_IDDFS(start,end): # Mason
     pass
 
-def path_astar(start,end):
+def path_astar(start,end): # ?
     pass
 
 def tester():
