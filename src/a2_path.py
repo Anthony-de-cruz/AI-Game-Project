@@ -10,6 +10,7 @@ Includes a State class for Task 2
 @date:   11/10/2025
 """
 
+# Safe path = a sequence of moves that never creates or passes through a hinger cell
 def path_BFS(start,end): # Anthony?
     pass
 
