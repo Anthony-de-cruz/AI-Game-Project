@@ -4,15 +4,9 @@
 Hinger Project
 Coursework 001 for: CMP-6058A Artificial Intelligence
 
-Includes a State class for Task 1
+@author: A23 (100385770, 100428908, TBC)
+@date:   12/10/2025
 
-@author: A3 REPLACE WITH OUR STUDENT ID'S :(12345, 5678, and 89123)
-@date:   04/10/2025
-
-TODO (Optional):
-    - check if a cell is active
-    - check if a cell is a hinger
-    - more utility methods
 """
 
 class State:
