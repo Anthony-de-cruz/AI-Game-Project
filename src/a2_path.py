@@ -84,15 +84,15 @@ def tester():
 
     print(state2.numHingers())
 
-    thing = path_IDDFS(state1, state2, max_limit = 30)
+    thing = path_IDDFS(state1, state2, max_limit = 5)
     if(thing == None):
         print("NO PATH")
-        return;
-
-    print("PATH")
-    for move in thing:
-        print("=======")
-        print(move)
+    else:    
+        print(f"PATH FOUND at depth {len(thing)-1}")
+        print("PATH")
+        for move in thing:
+            print("=======")
+            print(move)
 
 if __name__ == "__main__":
     tester()
