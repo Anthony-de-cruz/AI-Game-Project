@@ -96,7 +96,35 @@ def path_IDDFS(start : State,end: State, max_limit: int = 20) -> list[State] | N
     return None
 
 def path_astar(start,end): # ?
-    pass
+    if (start == end or start.numHingers() or end.numHingers()):
+        return None
+    
+    queue = deque[(start,[start])]
+    
+    while queue:
+        state, path = queue.popleft()
+        adj = state.moves()
+        heuristics = []
+        for v in adj:
+            if v.numHingers():
+                heuristic = len(path) + calculate_difference(state, end)
+                heuristic.append(heuristic)
+        heuristics.sort()
+        for h in heuristics:
+            queue.append(h)
+            
+        
+    
+  
+    
+    
+def calculate_difference(start, end):
+    difference = 0
+    for y in range(len(start.grid)):
+        for x in range(len(start.grid[0])):
+           difference += abs(start.grid[y][x] - end.grid[y][x])
+    return difference
+        
 
 def tester():
     print(path_BFS([0, 1, 0], [1, 0, 1]))  # Example 1
@@ -104,15 +132,15 @@ def tester():
     print(path_BFS([1, 0, 1], [1, 0, 1]))  # Example 3 (same start and end)
 
     state1 = State([[1,1,1],
-                    [1,1,2],
-                    [2,2,2]])
-
-    state2 = State([[0,0,0],
                     [1,1,1],
-                    [1,1,1]])
+                    [1,2,1]])
+
+    state2 = State([[1,1,0],
+                    [1,0,1],
+                    [0,1,1]])
 
     print(state2.numHingers())
-
+    print(calculate_difference(state1, state2))
     thing = path_IDDFS(state1, state2,max_limit = 8)
     if(thing == None):
         print("NO PATH")
