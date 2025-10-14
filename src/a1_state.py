@@ -110,10 +110,9 @@ class State:
 
         
 def tester():         
-    grid = [[1,1,0,2],
-            [1,1,0,0],
-            [0,0,1,1],
-            [0,0,1,1]]
+    grid = [[1,1,1],
+            [1,1,1],
+            [1,1,1]]
     
     st = State(grid)
     print("The number of active regions is:", st.numRegions())

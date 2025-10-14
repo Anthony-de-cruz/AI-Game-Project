@@ -72,19 +72,17 @@ def path_astar(start,end): # ?
     pass
 
 def tester():
-    state1 = State([[1,1,0,1],
-                    [1,2,0,0],
-                    [0,0,2,1],
-                    [0,0,1,1]])
+    state1 = State([[1,1,1],
+                    [1,1,2],
+                    [2,2,2]])
 
-    state2 = State([[1,1,0,0],
-                    [1,2,0,0],
-                    [0,0,2,0],
-                    [0,0,1,0]])
+    state2 = State([[0,0,0],
+                    [1,1,1],
+                    [1,1,1]])
 
     print(state2.numHingers())
 
-    thing = path_IDDFS(state1, state2, max_limit = 5)
+    thing = path_IDDFS(state1, state2,max_limit = 8)
     if(thing == None):
         print("NO PATH")
     else:    
