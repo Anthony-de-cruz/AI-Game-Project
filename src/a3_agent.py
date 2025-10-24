@@ -39,7 +39,7 @@ class Agent:
     
     def maximum_val(self,state) -> int:
         if self.win(state):
-            self.utility(state)
+            return self.utility(state)
         
         v = float("-inf")
         
@@ -89,11 +89,6 @@ def tester():
     move4 = agent.move(move3, mode="minimax")
     print(move4)
         
-                
-        
-
-agent1 = Agent(5)
-print(agent1)
 
 if __name__ == "__main__":
     tester()
