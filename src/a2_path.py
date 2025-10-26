@@ -16,7 +16,17 @@ from a1_state import State
 
 from collections import deque
 
-def path_BFS(start, end):
+def path_BFS(start: State, end: State) -> list[State] | None:
+    '''
+    Parameters
+    ----------
+    start : (Binary) Start state
+    end : (Binary) End state
+
+    Returns
+    ------
+    A safe path as a list of states or nothing if not safe path exists
+    '''
     start = tuple(start)
     end = tuple(end)
     n = len(start)
@@ -44,6 +54,17 @@ def path_BFS(start, end):
     return None  # no path found
 
 def path_DFS(start: State,end: State) -> list[State] | None:
+    '''
+    Parameters
+    ----------
+    start : (Binary) Start state
+    end : (Binary) End state
+
+    Returns
+    ------
+    A safe path as a list of states or nothing if not safe path exists
+    '''
+    
 
     if (start == end or
         start.numHingers() or
@@ -67,6 +88,17 @@ def path_DFS(start: State,end: State) -> list[State] | None:
 
 # IDDFS = Split into DLS (Depth limited search) and IDDFS to recursively call DLS
 def path_DLS(start : State, end : State, max_depth : int) -> list[State] | None:
+    '''  
+     Parameters
+     ----------
+     start : (Binary) Start state
+     end : (Binary) End state
+     max_depth : the maximum depth the algorithm can traverse
+    
+     Returns
+     ------
+     A safe path as a list of states or nothing if not safe path exists
+    '''
     
     if (start == end or start.numHingers() or end.numHingers()):
         return None
@@ -89,6 +121,19 @@ def path_DLS(start : State, end : State, max_depth : int) -> list[State] | None:
     
     
 def path_IDDFS(start : State,end: State, max_limit: int = 20) -> list[State] | None: # Mason
+    ''' 
+     Recusively calls DLS
+     
+     Parameters
+     ----------
+     start : (Binary) Start state
+     end : (Binary) End state
+     max_depth : the maximum depth the algorithm can traverse
+    
+     Returns
+     ------
+     A safe path as a list of states or nothing if not safe path exists
+    '''
     for depth in range(max_limit + 1):
         result = path_DLS(start, end, depth)
         if result:
