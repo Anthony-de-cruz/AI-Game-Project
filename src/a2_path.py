@@ -98,6 +98,30 @@ def path_IDDFS(start : State,end: State, max_limit: int = 20) -> list[State] | N
 def path_astar(start,end): # ?
     pass
 
+def compare(start, end):
+    import time
+    print("\nComparing BFS, DFS, IDDFS, and A* performance:\n")
+
+    algos = {
+        "BFS": lambda: path_BFS(start, end),
+        "DFS": lambda: path_DFS(State([start]), State([end])),
+        "IDDFS": lambda: path_IDDFS(State([start]), State([end])),
+        "A*": lambda: path_astar(start, end)
+    }
+
+    print(f"{'Algorithm':<10} {'Found?':<8} {'Path Len':<10} {'Time (s)':<10}")
+    print("-" * 40)
+
+    for name, func in algos.items():
+        t1 = time.time()
+        path = func()
+        t2 = time.time()
+        found = path is not None
+        length = len(path) if path else 0
+        print(f"{name:<10} {str(found):<8} {length:<10} {t2 - t1:<10.6f}")
+
+    print("-" * 40)
+
 def tester():
     print(path_BFS([0, 1, 0], [1, 0, 1]))  # Example 1
     print(path_BFS([0, 0, 0], [1, 1, 1]))  # Example 2
@@ -123,5 +147,11 @@ def tester():
             print("=======")
             print(move)
 
+# --- Compare algorithm performance ---
+    print("\nRunning performance comparison...")
+    compare([0, 0, 0], [1, 1, 1])
+    print("Comparison complete.\n")
+
 if __name__ == "__main__":
     tester()
+    
