@@ -4,7 +4,7 @@
 Hinger Project
 Coursework 001 for: CMP-6058A Artificial Intelligence
 
-@author: A23 (100385770, 100428908, TBC)
+@author: A23 (100385770, 100428908, 100357095)
 @date:   12/10/2025
 
 """
@@ -56,7 +56,6 @@ def path_BFS(start: State, end: State) -> list[State] | None:
 
     return None  # no path found
 
-
 def path_DFS(start: State, end: State) -> list[State] | None:
     """
     Navigates to the end state via the depth first search algorithm.
@@ -93,8 +92,20 @@ def path_DFS(start: State, end: State) -> list[State] | None:
 
 
 # IDDFS = Split into DLS (Depth limited search) and IDDFS to recursively call DLS
-def path_DLS(start: State, end: State, max_depth: int) -> list[State] | None:
-    if start == end or start.numHingers() or end.numHingers():
+def path_DLS(start : State, end : State, max_depth : int) -> list[State] | None:
+    """
+     Parameters
+     ----------
+     start : (Binary) Start state
+     end : (Binary) End state
+     max_depth : the maximum depth the algorithm can traverse
+    
+     Returns
+     ------
+     A safe path as a list of states or nothing if not safe path exists
+    """
+    
+    if (start == end or start.numHingers() or end.numHingers()):
         return None
 
     stack = [(start, [start])]

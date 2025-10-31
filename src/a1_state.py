@@ -17,13 +17,20 @@ class State:
         '''
         Parameters
         ----------
-        grid : 2D List of lists
+        grid : 2D List of lists that the game is played on
 
         '''
         
         self.grid = grid
         
     def __str__(self):
+        '''
+
+        Returns
+        -------
+        A more readable representation of the grid
+
+        '''
         return '\n'.join(' '.join(str(cell) for cell in row) for row in self.grid)
 
     
@@ -31,7 +38,7 @@ class State:
         '''
         Returns
         -------
-        List (copy)
+        A List (deep copy) of the grid
         '''
         return [row[:] for row in self.grid]
     
@@ -39,7 +46,7 @@ class State:
         '''
         Returns
         -------
-        A generator of all possible next states
+        A generator of all possible next states in the game
         '''
         for i in range(len(self.grid)):
             for j in range (len(self.grid[i])):
