@@ -4,10 +4,12 @@
 Hinger Project
 Coursework 001 for: CMP-6058A Artificial Intelligence
 
-@author: A23 (100385770, 100428908, TBC)
+@author: A23 (100385770, 100428908, 100357095)
 @date:   12/10/2025
 
 """
+
+import unittest
 
 class State:
     
@@ -113,10 +115,44 @@ class State:
 
 
 
-    
 
-        
+class TestA1(unittest.TestCase):
+    def test_numHingers(self):
+        grid = [[1,1,0,2],
+                [1,1,0,0],
+                [0,0,1,1],
+                [0,0,1,1]]
+        self.assertEqual(State(grid).numHingers(), 2)
+
+        grid = [[1,1,0,2],
+                [1,2,0,0],
+                [0,0,1,1],
+                [0,0,1,1]]
+        self.assertEqual(State(grid).numHingers(), 1)
+
+        grid = [[1,1,0,2],
+                [1,2,0,0],
+                [0,0,2,1],
+                [0,0,1,1]]
+        self.assertEqual(State(grid).numHingers(), 0)
+
+    def test_numRegions(self):
+        grid = [[1,1,0,2],
+                [1,1,0,0],
+                [0,0,1,1],
+                [0,0,1,1]]
+        self.assertEqual(State(grid).numRegions(), 2)
+
+        grid = [[1,1,0,2],
+                [1,0,0,0],
+                [0,0,1,1],
+                [0,0,1,1]]
+        self.assertEqual(State(grid).numRegions(), 3)
+
+       
 def tester():         
+    unittest.main(exit=False)
+
     grid = [[1,1,1],
             [1,1,1],
             [1,1,1]]

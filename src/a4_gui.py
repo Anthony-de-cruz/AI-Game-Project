@@ -2,7 +2,7 @@
 Hinger Project
 Coursework 001 for: CMP-6058A Artificial Intelligence
 
-@author: A23 (100385770, 100428908, TBC)
+@author: A23 (100385770, 100428908, 100357095)
 @date:   19/10/2025
 """
 import pygame
