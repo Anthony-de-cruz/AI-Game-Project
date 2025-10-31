@@ -17,6 +17,7 @@ from typing import List, Tuple
 
 from a1_state import State
 
+import matplotlib.pyplot as plt
 
 # Safe path = a sequence of moves that never creates or passes through a hinger cell
 
@@ -235,6 +236,8 @@ def compare(tests: List[Tuple[State, State]], repetitions) -> None:
         "A*": [],
     }
 
+    # Perform tests.
+
     for test in tests:
         print()
         for index in range(len(test[0].grid)):
@@ -281,8 +284,62 @@ def compare(tests: List[Tuple[State, State]], repetitions) -> None:
 
         print("-" * (42 + repetitions * 12))
 
-    for key in results:
-        print(f"Average time (s) for {key}: {sum(results[key]) / len(results[key])}")
+    # Compute the results.
+    averages = {algo: sum(times) / len(times) for algo, times in results.items()}
+
+    print("Average completion times:")
+    for algo, avg in averages.items():
+        print(f"  {algo:<6} → {avg:.6f} s")
+
+    # --- Line Plot: Performance per test ---
+    plt.figure(figsize=(8, 5))
+    num_tests = len(next(iter(results.values())))
+    test_labels = [f"Test {i + 1}" for i in range(num_tests)]
+
+    for algo, times in results.items():
+        plt.plot(test_labels, times, marker="o", label=algo)
+
+    plt.title("Algorithm Performance per Test", fontsize=14, fontweight="bold", pad=10)
+    plt.xlabel("Test Case", fontsize=12)
+    plt.ylabel("Completion Time (s)", fontsize=12)
+    plt.legend()
+    plt.grid(True, linestyle="--", alpha=0.6)
+    plt.tight_layout()
+    plt.savefig("plot1.png", dpi=300, bbox_inches="tight")
+    plt.show()
+    plt.clf()
+
+    # --- Bar Chart: Average completion times ---
+    plt.figure(figsize=(7, 5))
+    algos = list(averages.keys())
+    avg_times = list(averages.values())
+    bar_colors = ["#4E79A7", "#F28E2B", "#E15759", "#76B7B2"]
+
+    bars = plt.bar(algos, avg_times, color=bar_colors, edgecolor="black", alpha=0.85)
+
+    # Add labels above bars
+    for bar in bars:
+        yval = bar.get_height()
+        plt.text(
+            bar.get_x() + bar.get_width() / 2,
+            yval + 0.02,
+            f"{yval:.3f}s",
+            ha="center",
+            va="bottom",
+            fontsize=10,
+            fontweight="bold",
+        )
+
+    plt.title(
+        "Average Algorithm Completion Times", fontsize=14, fontweight="bold", pad=15
+    )
+    plt.ylabel("Average Time (seconds)", fontsize=12)
+    plt.xlabel("Algorithm", fontsize=12)
+    plt.grid(axis="y", linestyle="--", alpha=0.6)
+    plt.tight_layout()
+    plt.savefig("plot2.png", dpi=300, bbox_inches="tight")
+    plt.show()
+    plt.clf()
 
 
 test_valid_1 = (
