@@ -221,6 +221,20 @@ def path_ASTAR(start: State, end: State) -> list[State] | None:
 def compare(tests: List[Tuple[State, State]], repetitions) -> None:
     print("\nComparing BFS, DFS, IDDFS, and A* performance:\n")
 
+    algos = {
+        "BFS": path_BFS,
+        "DFS": path_DFS,
+        "IDDFS": path_IDDFS,
+        "A*": path_ASTAR,
+    }
+
+    results: dict[str, list[float]] = {
+        "BFS": [],
+        "DFS": [],
+        "IDDFS": [],
+        "A*": [],
+    }
+
     for test in tests:
         print()
         for index in range(len(test[0].grid)):
@@ -235,13 +249,6 @@ def compare(tests: List[Tuple[State, State]], repetitions) -> None:
                 print(f"{value} ", end="")
             print()
         print()
-
-        algos = {
-            "BFS": path_BFS,
-            "DFS": path_DFS,
-            "IDDFS": path_IDDFS,
-            "A*": path_ASTAR,
-        }
 
         print(
             f"{'Algorithm':<10} {'Found?':<8} {'Path Len':<10} {'Time Avg (s)':<10}",
@@ -264,12 +271,18 @@ def compare(tests: List[Tuple[State, State]], repetitions) -> None:
             average = sum(times) / repetitions
             found = path is not None
             length = len(path) if path else 0
+
+            results[name].append(average)
+
             print(f"{name:<10} {str(found):<8} {length:<10} {average:<12.6f}", end="")
             for x in range(repetitions):
                 print(f" {times[x]:<11.6f}", end="")
             print()
 
         print("-" * (42 + repetitions * 12))
+
+    for key in results:
+        print(f"Average time (s) for {key}: {sum(results[key]) / len(results[key])}")
 
 
 test_valid_1 = (
@@ -379,46 +392,46 @@ def tester():
             State([[1, 1, 0, 1], [1, 2, 0, 0], [0, 0, 2, 1], [0, 0, 1, 1]]),
             State([[0, 0, 0, 1], [1, 2, 0, 0], [0, 0, 2, 1], [0, 0, 0, 0]]),
         ),
-        (
-            State(
-                [
-                    [1, 1, 0, 1, 1],
-                    [1, 2, 0, 0, 0],
-                    [0, 0, 2, 1, 0],
-                    [0, 0, 1, 1, 1],
-                    [0, 0, 0, 0, 1],
-                ]
-            ),
-            State(
-                [
-                    [0, 0, 0, 1, 0],
-                    [1, 2, 0, 0, 0],
-                    [0, 0, 2, 1, 0],
-                    [0, 0, 0, 0, 1],
-                    [0, 0, 0, 0, 0],
-                ]
-            ),
-        ),
-        (
-            State(
-                [
-                    [1, 1, 0, 1, 1],
-                    [2, 2, 0, 0, 0],
-                    [2, 0, 2, 1, 0],
-                    [1, 0, 1, 1, 1],
-                    [0, 0, 0, 0, 1],
-                ]
-            ),
-            State(
-                [
-                    [1, 0, 0, 1, 0],
-                    [2, 2, 0, 0, 0],
-                    [2, 0, 2, 1, 0],
-                    [1, 0, 0, 0, 1],
-                    [0, 0, 0, 0, 0],
-                ]
-            ),
-        ),
+        # (
+        #     State(
+        #         [
+        #             [1, 1, 0, 1, 1],
+        #             [1, 2, 0, 0, 0],
+        #             [0, 0, 2, 2, 0],
+        #             [0, 0, 1, 1, 1],
+        #             [0, 0, 0, 0, 1],
+        #         ]
+        #     ),
+        #     State(
+        #         [
+        #             [0, 0, 0, 1, 0],
+        #             [1, 2, 0, 0, 0],
+        #             [0, 0, 2, 2, 0],
+        #             [0, 0, 0, 1, 1],
+        #             [0, 0, 0, 0, 1],
+        #         ]
+        #     ),
+        # ),
+        # (
+        #     State(
+        #         [
+        #             [1, 1, 0, 1, 1],
+        #             [2, 2, 0, 0, 0],
+        #             [2, 0, 2, 1, 0],
+        #             [1, 0, 1, 1, 1],
+        #             [0, 0, 0, 0, 1],
+        #         ]
+        #     ),
+        #     State(
+        #         [
+        #             [1, 0, 0, 1, 0],
+        #             [2, 2, 0, 0, 0],
+        #             [2, 0, 2, 1, 0],
+        #             [1, 0, 1, 1, 1],
+        #             [0, 0, 0, 0, 0],
+        #         ]
+        #     ),
+        # ),
     ]
 
     print("\nPerforming algorithmic analysis...")
