@@ -54,8 +54,10 @@ class Agent:
         '''
         if mode == 'minimax':
             return self.minimax(state)
+        elif mode == 'alphabeta':
+            return self.alphabeta_search(state)
         else:
-            return None
+            raise ValueError(f"Unknown mode '{mode}'. Use 'minimax' or 'alphabeta'.")
         
     
     def minimax(self,state: State) -> State| None:
@@ -90,7 +92,7 @@ class Agent:
         for move in state.moves():
             v = max(v, self.minimum_value(move))
     
-        return v
+        return int(v)
     
     def minimum_value(self,state) -> int:
         if self.win(state):
@@ -100,7 +102,48 @@ class Agent:
         for move in state.moves():
             v = min(v, self.maximum_val(move))
     
-        return v
+        return int(v)
+
+    def alphabeta_search(self, state: State) -> State | None:
+        '''
+        Implements alpha-beta pruning to choose the best move.
+        '''
+        best_score = float("-inf")
+        best_move = None
+        alpha = float("-inf")
+        beta = float("inf")
+        
+        for move in state.moves():
+            value = self.min_value_ab(move, alpha, beta)
+            if value > best_score:
+                best_score = value
+                best_move = move
+            alpha = max(alpha, best_score)
+        return best_move
+    
+    def max_value_ab(self, state: State, alpha: float, beta: float) -> int:
+        if self.win(state):
+            return self.utility(state)
+        
+        v = float("-inf")
+        for move in state.moves():
+            v = max(v, self.min_value_ab(move, alpha, beta))
+            if v >= beta:
+                return v  # prune
+            alpha = max(alpha, v)
+        return int(v)
+    
+    def min_value_ab(self, state: State, alpha: float, beta: float) -> int:
+        if self.win(state):
+            return self.utility(state)
+        
+        v = float("inf")
+        for move in state.moves():
+            v = min(v, self.max_value_ab(move, alpha, beta))
+            if v <= alpha:
+                return int(v)  # prune
+            beta = min(beta, v)
+        return int(v)
             
     
     def win(self, state: State) -> bool:
@@ -147,17 +190,11 @@ def tester():
     print(state1)
         
     print("\nBest move (minimax):")
-    move = agent.move(state1, mode="minimax")
-    print(move)
-    move1 = agent.move(move, mode="minimax")
-    print(move1)
-    move2 = agent.move(move1, mode="minimax")
-    print(move2)
-    move3 = agent.move(move2, mode="minimax")
-    print(move3)
-    move4 = agent.move(move3, mode="minimax")
-    print(move4)
-        
+    move = agent.move(state1, mode="alphabeta")
+    while move:
+        print(move)
+        move = agent.move(move, mode="alphabeta")
+
 
 if __name__ == "__main__":
     tester()
