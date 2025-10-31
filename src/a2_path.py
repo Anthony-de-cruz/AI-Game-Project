@@ -218,7 +218,7 @@ def path_ASTAR(start: State, end: State) -> list[State] | None:
     return None
 
 
-def compare(tests: List[Tuple[State, State]]) -> None:
+def compare(tests: List[Tuple[State, State]], repetitions) -> None:
     print("\nComparing BFS, DFS, IDDFS, and A* performance:\n")
 
     for test in tests:
@@ -243,18 +243,33 @@ def compare(tests: List[Tuple[State, State]]) -> None:
             "A*": path_ASTAR,
         }
 
-        print(f"{'Algorithm':<10} {'Found?':<8} {'Path Len':<10} {'Time (s)':<10}")
-        print("-" * 40)
+        print(
+            f"{'Algorithm':<10} {'Found?':<8} {'Path Len':<10} {'Time Avg (s)':<10}",
+            end="",
+        )
+        for x in range(repetitions):
+            print(f" {f'Time {x} (s)':<11}", end="")
+        print()
+        print("-" * (42 + repetitions * 12))
 
         for name, func in algos.items():
-            t1 = time.time()
-            path = func(test[0], test[1])
-            t2 = time.time()
+            times = []
+            path = None
+            for x in range(repetitions):
+                t1 = time.time()
+                path = func(test[0], test[1])
+                t2 = time.time()
+                times.append(t2 - t1)
+
+            average = sum(times) / repetitions
             found = path is not None
             length = len(path) if path else 0
-            print(f"{name:<10} {str(found):<8} {length:<10} {t2 - t1:<10.6f}")
+            print(f"{name:<10} {str(found):<8} {length:<10} {average:<12.6f}", end="")
+            for x in range(repetitions):
+                print(f" {times[x]:<11.6f}", end="")
+            print()
 
-        print("-" * 40)
+        print("-" * (42 + repetitions * 12))
 
 
 test_valid_1 = (
@@ -339,25 +354,75 @@ def tester():
     print("Running unit test suite...")
     unittest.main(exit=False)
 
-    start1 = State([[2, 1, 1], [1, 2, 2], [1, 1, 1]])
-    end1 = State([[0, 1, 1], [1, 2, 1], [0, 1, 0]])
-
-    start2 = State([[2, 1, 1], [1, 1, 1], [2, 2, 1]])
-    end2 = State([[0, 1, 0], [0, 1, 1], [1, 1, 0]])
-
-    start3 = State([[4, 1, 1], [1, 1, 1], [1, 1, 1]])
-    end3 = State([[0, 1, 0], [1, 1, 0], [1, 1, 0]])
-
-    start4 = State([[1, 1, 0, 1], [1, 2, 0, 0], [0, 0, 2, 1], [0, 0, 1, 1]])
-    end4 = State([[1, 1, 0, 0], [1, 2, 0, 0], [0, 0, 2, 0], [0, 0, 1, 0]])
-
-    start5 = State([[1, 1, 0, 1], [1, 2, 0, 0], [0, 0, 2, 1], [0, 0, 1, 1]])
-    end5 = State([[0, 0, 0, 1], [1, 2, 0, 0], [0, 0, 2, 1], [0, 0, 0, 0]])
+    tests = [
+        (
+            State([[2, 1, 1], [1, 2, 2], [1, 1, 1]]),
+            State([[0, 1, 1], [1, 2, 1], [0, 1, 0]]),
+        ),
+        (
+            State([[2, 1, 1], [1, 1, 1], [2, 2, 1]]),
+            State([[0, 1, 0], [0, 1, 1], [1, 1, 0]]),
+        ),
+        (
+            State([[4, 1, 1], [1, 1, 1], [1, 1, 1]]),
+            State([[0, 1, 0], [1, 1, 0], [1, 1, 0]]),
+        ),
+        (
+            State([[4, 1, 1], [1, 1, 1], [1, 1, 1]]),
+            State([[0, 1, 0], [1, 1, 0], [1, 1, 0]]),
+        ),
+        (
+            State([[1, 1, 0, 1], [1, 2, 0, 0], [0, 0, 2, 1], [0, 0, 1, 1]]),
+            State([[1, 1, 0, 0], [1, 2, 0, 0], [0, 0, 2, 0], [0, 0, 1, 0]]),
+        ),
+        (
+            State([[1, 1, 0, 1], [1, 2, 0, 0], [0, 0, 2, 1], [0, 0, 1, 1]]),
+            State([[0, 0, 0, 1], [1, 2, 0, 0], [0, 0, 2, 1], [0, 0, 0, 0]]),
+        ),
+        (
+            State(
+                [
+                    [1, 1, 0, 1, 1],
+                    [1, 2, 0, 0, 0],
+                    [0, 0, 2, 1, 0],
+                    [0, 0, 1, 1, 1],
+                    [0, 0, 0, 0, 1],
+                ]
+            ),
+            State(
+                [
+                    [0, 0, 0, 1, 0],
+                    [1, 2, 0, 0, 0],
+                    [0, 0, 2, 1, 0],
+                    [0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0],
+                ]
+            ),
+        ),
+        (
+            State(
+                [
+                    [1, 1, 0, 1, 1],
+                    [2, 2, 0, 0, 0],
+                    [2, 0, 2, 1, 0],
+                    [1, 0, 1, 1, 1],
+                    [0, 0, 0, 0, 1],
+                ]
+            ),
+            State(
+                [
+                    [1, 0, 0, 1, 0],
+                    [2, 2, 0, 0, 0],
+                    [2, 0, 2, 1, 0],
+                    [1, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0],
+                ]
+            ),
+        ),
+    ]
 
     print("\nPerforming algorithmic analysis...")
-    compare(
-        [(start1, end1), (start2, end2), (start3, end3), (start4, end4), (start5, end5)]
-    )
+    compare(tests, 3)
 
 
 if __name__ == "__main__":
