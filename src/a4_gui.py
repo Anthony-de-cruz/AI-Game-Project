@@ -43,9 +43,9 @@ def main():
     font = pygame.font.Font(None, FONT_SIZE)
 
     grid = [
+        [1, 0, 1],
         [1, 1, 1],
-        [1, 2, 1],
-        [1, 1, 1]
+        [1, 1, 1],
     ]
     state = State(grid)
 
@@ -53,9 +53,13 @@ def main():
     agentA = Agent((3, 3), name="Agent1")
     agentB = Agent((3, 3), name="Agent2")
 
+
+    turnAgentType = "minimax"
+    otherAgentType = "alphabeta"
+
     # Choose mode 
     # Options: "human_vs_human", "human_vs_ai", "ai_vs_ai"
-    mode = "ai_vs_ai"
+    mode = "human_vs_ai"
 
     rows, cols = len(grid), len(grid[0])
     width = cols * (CELL_SIZE + MARGIN)
@@ -70,6 +74,7 @@ def main():
     # Turn management
     human_turn = True          # True = Player 1's turn, False = Player 2 / AI turn
     turn_agent = agentA         # for AI vs AI
+    other_agent = agentB
 
     while running:
         screen.fill(BG_COLOR)
@@ -104,29 +109,32 @@ def main():
                     j = mx // (CELL_SIZE + MARGIN)
                     i = my // (CELL_SIZE + MARGIN)
                     if 0 <= i < rows and 0 <= j < cols and state.grid[i][j] > 0:
-                        state.grid[i][j] -= 1
+                        next_state = State(state.clone())
+                        next_state.grid[i][j] -= 1
+                        
                         # Determine winner if removing a hinger
-                        if state.numHingers() > 0:
+                        if next_state.numRegions() > state.numRegions():
                             if mode == "human_vs_human":
                                 winner = "Player 1" if human_turn else "Player 2"
                             else:  # human_vs_ai
-                                winner = "Human"
+                                winner = "ai"
                         else:
                             if mode == "human_vs_human":
                                 human_turn = not human_turn  # switch to next human player
                             else:
                                 human_turn = False  # switch to AI
-
+                        state = next_state
 
         # --- AI vs AI ---
         if mode == "ai_vs_ai" and not winner:
-            next_state = turn_agent.move(state)
+            next_state = turn_agent.move(state, mode = turnAgentType)
             if next_state:
-                state = next_state
-                if state.numHingers() > 0:
+                if next_state.numRegions() > state.numRegions():
                     winner = turn_agent.name
                 else:
-                    turn_agent = agentB if turn_agent == agentA else agentA
+                    turn_agent, other_agent = other_agent, turn_agent
+                    turnAgentType, otherAgentType = otherAgentType, turnAgentType
+                state = next_state
             pygame.display.flip()
             time.sleep(1.0)
 
@@ -134,13 +142,13 @@ def main():
         elif mode == "human_vs_ai" and not human_turn and not winner:
             pygame.display.flip()
             time.sleep(0.8)
-            next_state = agentA.move(state)
+            next_state = turn_agent.move(state, mode= turnAgentType)
             if next_state:
-                state = next_state
-                if state.numHingers() > 0:
-                    winner = agentA.name
+                if next_state.numRegions() > state.numRegions():
+                    winner = "human"
                 else:
                     human_turn = True
+                state = next_state
             pygame.display.flip()
             time.sleep(1.0)
 

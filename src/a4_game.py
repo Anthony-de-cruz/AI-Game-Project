@@ -37,13 +37,22 @@ def play(state: State, agentA: Agent | None, agentB: Agent | None) -> str | None
     print(state)
 
     current = state
+    current_agent_type = "minimax"
+    other_agent_type = "alphabeta"
     current_agent = agentA
     other_agent = agentB
     turn = 1
 
+    current_player_name = "Human A"
+    other_player_name = "Human B"
+
     while True:
         print(f"\n--- Turn {turn} ---")
-        print(f"Current player: {current_agent.name if current_agent else 'Human A' if current_agent is agentA else 'Human B'}")
+        if current_agent:
+            print(f"Current agent: {current_agent.name}")
+        else:
+            print(f"Current Player : {current_player_name}")
+        
         print(current)
 
         if current_agent is None:
@@ -72,18 +81,19 @@ def play(state: State, agentA: Agent | None, agentB: Agent | None) -> str | None
 
         else:
             # Agent’s turn
-            next_state = current_agent.move(current, mode="minimax")
+            next_state = current_agent.move(current, mode=current_agent_type)
+            print(f"moving as {current_agent_type}")
             if next_state is None:
                 print("Agent failed to produce a valid move.")
-                print(f"{other_agent.name if other_agent else 'Human'} wins by default.")
+                print(f"Winner : {current_agent.name if current_agent else current_player_name} wins by default.")
                 return other_agent.name if other_agent else "Human"
 
         # Check if game over or hinger made
-        if next_state.numHingers() > 0:
-            print("\nHinger Created!")
+        if next_state.numRegions() > current.numRegions() :
+            print("\nHinger Taken!")
             print(next_state)
-            print(f"Winner: {other_agent.name if other_agent else 'Human'}")
-            return other_agent.name if other_agent else "Human"
+            print(f"Winner: {current_agent.name if current_agent else current_player_name}")
+            return current_agent.name if current_agent else current_player_name
 
         if not any(next_state.moves()):
             print("\nNo more moves available — Draw!")
@@ -93,20 +103,33 @@ def play(state: State, agentA: Agent | None, agentB: Agent | None) -> str | None
         # Go to next turn
         current = next_state
         current_agent, other_agent = other_agent, current_agent
+        current_agent_type, other_agent_type = other_agent_type, current_agent_type
+        current_player_name, other_player_name = other_player_name, current_player_name
         turn += 1
 
 
 
 def tester():
     grid = [
-        [0, 0, 0],
-        [2, 0, 1],
-        [0, 0, 0]
+        [1, 0, 1],
+        [1, 0, 1],
+        [1, 1, 1]
     ]
 
     state = State(grid)
-    agentA = Agent((3, 3), name="Alpha")
-    agentB = Agent((3, 3), name="Beta")
+    
+    agentA =Agent((3,3), name = "jerry minimax")
+    agentB = Agent((3,3), name = "laurence alphabeta")
+    
+    '''
+    agentA = None
+    agentB = None
+    '''
+    '''
+    agentA = Agent((3,3), name = "joe")
+    agentB = None
+    '''
+    
 
     winner = play(state, agentA, agentB)
     if winner:

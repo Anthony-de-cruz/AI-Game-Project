@@ -81,6 +81,8 @@ class Agent:
         best_score = float("-inf")
         best_move = None
         
+        current_regions = state.numRegions()
+        possible_moves = list(state.moves)
         for move in state.moves():
             value = self.minimum_value(move)
             if value > best_score:
@@ -165,7 +167,7 @@ class Agent:
         '''
         return state.numHingers() > 0 or not any(state.moves())
     
-    def utility(self, state: State) -> int:
+    def utility(self, state: State,) -> int:
         '''
         
         Evaluates the Utility of a terminal game state
@@ -180,10 +182,12 @@ class Agent:
             -1 if the cirrent player has lost the game
 
         '''
+
         if state.numHingers() > 0:
             return -1
         else:
             return 1
+    
 
 
 def compare(agent: Agent, tests: list[State]) -> None:
@@ -259,9 +263,9 @@ def compare(agent: Agent, tests: list[State]) -> None:
 
 
 def tester():
-    state1 = State([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
+    state1 = State([[1, 1, 1], [1, 2, 1], [1, 1, 1]])
     agent = Agent((3, 3))
-
+    '''
     compare(
         agent,
         [
@@ -273,14 +277,24 @@ def tester():
             State([[0, 1, 2], [0, 2, 0], [0, 2, 1]]),
         ],
     )
+    '''
+    
 
     print("Initial State: ")
     print(state1)
 
     print("\nBest move (minimax):")
+    move = agent.move(state1, mode="minimax")
+    while move:
+        print(move)
+        print("\n")
+        move = agent.move(move, mode="minimax")
+
+    print("\nBest move (alphabeta):")
     move = agent.move(state1, mode="alphabeta")
     while move:
         print(move)
+        print("\n")
         move = agent.move(move, mode="alphabeta")
 
 
