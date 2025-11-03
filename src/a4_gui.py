@@ -43,8 +43,8 @@ def main():
     font = pygame.font.Font(None, FONT_SIZE)
 
     grid = [
-        [1, 0, 1],
         [1, 1, 1],
+        [1, 0, 1],
         [1, 1, 1],
     ]
     state = State(grid)
@@ -59,7 +59,7 @@ def main():
 
     # Choose mode 
     # Options: "human_vs_human", "human_vs_ai", "ai_vs_ai"
-    mode = "human_vs_ai"
+    mode = "ai_vs_ai"
 
     rows, cols = len(grid), len(grid[0])
     width = cols * (CELL_SIZE + MARGIN)
@@ -117,7 +117,7 @@ def main():
                             if mode == "human_vs_human":
                                 winner = "Player 1" if human_turn else "Player 2"
                             else:  # human_vs_ai
-                                winner = "ai"
+                                winner = "Human"
                         else:
                             if mode == "human_vs_human":
                                 human_turn = not human_turn  # switch to next human player
@@ -135,6 +135,8 @@ def main():
                     turn_agent, other_agent = other_agent, turn_agent
                     turnAgentType, otherAgentType = otherAgentType, turnAgentType
                 state = next_state
+            else:
+                winner = other_agent.name
             pygame.display.flip()
             time.sleep(1.0)
 
@@ -145,10 +147,12 @@ def main():
             next_state = turn_agent.move(state, mode= turnAgentType)
             if next_state:
                 if next_state.numRegions() > state.numRegions():
-                    winner = "human"
+                    winner = turn_agent.name
                 else:
                     human_turn = True
                 state = next_state
+            else:
+                winner = "Human"
             pygame.display.flip()
             time.sleep(1.0)
 

@@ -82,8 +82,10 @@ class Agent:
         best_move = None
         
         current_regions = state.numRegions()
-        possible_moves = list(state.moves)
-        for move in state.moves():
+        possible_moves = list(state.moves())
+        for move in possible_moves:
+            if move.numRegions() > current_regions:
+                return move
             value = self.minimum_value(move)
             if value > best_score:
                 best_score = value
@@ -91,24 +93,36 @@ class Agent:
         return best_move
     
     def maximum_val(self,state) -> int:
-        if self.win(state):
-            return self.utility(state)
+        possible_moves = list(state.moves())
+        if not possible_moves:
+            return -1 # max has no moves so max loses
         
+        current_regions = state.numRegions()
+
         v = float("-inf")
         
         for move in state.moves():
+            if move.numRegions() > current_regions:
+                return 1 # max finds a winning move
+            
             v = max(v, self.minimum_value(move))
     
         return int(v)
     
     def minimum_value(self,state) -> int:
-        if self.win(state):
-            return self.utility(state)
+        possible_moves = list(state.moves())
+        if not possible_moves:
+            return 1    # max has no moves so max loses
         
+        current_regions = state.numRegions()
+
         v = float("inf")
+        
         for move in state.moves():
+            if move.numRegions() > current_regions:
+                return -1 # max finds a winning move
+            
             v = min(v, self.maximum_val(move))
-    
         return int(v)
 
     def alphabeta_search(self, state: State) -> State | None:
@@ -120,7 +134,15 @@ class Agent:
         alpha = float("-inf")
         beta = float("inf")
         
-        for move in state.moves():
+        current_regions = state.numRegions()
+        possible_moves = list(state.moves())
+
+        if not possible_moves:
+            return None # No possible moves
+        for move in possible_moves:
+            # Check for a a win
+            if move.numRegions() > current_regions:
+                return move
             value = self.min_value_ab(move, alpha, beta)
             if value > best_score:
                 best_score = value
@@ -129,11 +151,15 @@ class Agent:
         return best_move
     
     def max_value_ab(self, state: State, alpha: float, beta: float) -> int:
-        if self.win(state):
-            return self.utility(state)
+        possible_moves = list(state.moves())
+        if not possible_moves:
+            return -1
         
+        current_regions = state.numRegions()
         v = float("-inf")
         for move in state.moves():
+            if move.numRegions() > current_regions:
+                return 1
             v = max(v, self.min_value_ab(move, alpha, beta))
             if v >= beta:
                 return v  # prune
@@ -141,75 +167,61 @@ class Agent:
         return int(v)
     
     def min_value_ab(self, state: State, alpha: float, beta: float) -> int:
-        if self.win(state):
-            return self.utility(state)
+        possible_moves = list(state.moves())
+        if not possible_moves:
+            return 1
         
+        current_regions = state.numRegions()
         v = float("inf")
         for move in state.moves():
+            if move.numRegions() > current_regions:
+                return -1
             v = min(v, self.max_value_ab(move, alpha, beta))
             if v <= alpha:
-                return int(v)  # prune
+                return v  # prune
             beta = min(beta, v)
         return int(v)
-            
     
-    def win(self, state: State) -> bool:
-        '''
-
-        Parameters
-        ----------
-        state : State of the current board 
-
-        Returns
-        -------
-        True or False depending on whether the player has one
-
-        '''
-        return state.numHingers() > 0 or not any(state.moves())
     
-    def utility(self, state: State,) -> int:
-        '''
-        
-        Evaluates the Utility of a terminal game state
-        Parameters
-        ----------
-        state : State of the current board
-
-        Returns
-        -------
-        int
-            +1 if the curent player has won the game
-            -1 if the cirrent player has lost the game
-
-        '''
-
-        if state.numHingers() > 0:
-            return -1
-        else:
-            return 1
     
-
 
 def compare(agent: Agent, tests: list[State]) -> None:
+    
     times: dict[str, list[float]] = {"minimax": [], "alphabeta": []}
 
     for algo in times:
         print(f"Testing: {algo}...")
         for start in tests:
             t1 = time.time()
-            move = agent.move(start, mode=algo)
-            while move:
-                if agent.win(move):
+            
+            # --- Simulated game loop ---
+            current_state = start
+            while True:
+                current_regions = current_state.numRegions()
+                next_move = agent.move(current_state, mode=algo)
+
+                # Condition 1: Game over (Loss)
+                # The agent had no moves and returned None
+                if next_move is None:
+                    break 
+                
+                # Condition 2: Game over (Win)
+                # The agent took a hinger
+                if next_move.numRegions() > current_regions:
                     break
-                move = agent.move(move, mode=algo)
+
+                # continue the game
+                current_state = next_move
+            # --- End of loop ---
+
             t2 = time.time()
             times[algo].append(t2 - t1)
         print(times[algo])
 
     averages = {k: sum(v) / len(v) for k, v in times.items()}
 
-    # --- Print results neatly ---
-    print("Average completion times:")
+    # --- Print results ---
+    print("\nAverage completion times:")
     for algo, avg in averages.items():
         print(f"  {algo:<10} = {avg:.6f} s")
 
@@ -265,7 +277,7 @@ def compare(agent: Agent, tests: list[State]) -> None:
 def tester():
     state1 = State([[1, 1, 1], [1, 2, 1], [1, 1, 1]])
     agent = Agent((3, 3))
-    '''
+    
     compare(
         agent,
         [
@@ -277,7 +289,7 @@ def tester():
             State([[0, 1, 2], [0, 2, 0], [0, 2, 1]]),
         ],
     )
-    '''
+    
     
 
     print("Initial State: ")

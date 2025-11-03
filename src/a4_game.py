@@ -38,7 +38,7 @@ def play(state: State, agentA: Agent | None, agentB: Agent | None) -> str | None
 
     current = state
     current_agent_type = "minimax"
-    other_agent_type = "alphabeta"
+    other_agent_type = "minimax"
     current_agent = agentA
     other_agent = agentB
     turn = 1
@@ -111,24 +111,26 @@ def play(state: State, agentA: Agent | None, agentB: Agent | None) -> str | None
 
 def tester():
     grid = [
-        [1, 0, 1],
+        [1, 1, 1],
         [1, 0, 1],
         [1, 1, 1]
     ]
 
     state = State(grid)
     
-    agentA =Agent((3,3), name = "jerry minimax")
-    agentB = Agent((3,3), name = "laurence alphabeta")
-    
+    '''
+    agentA = Agent((3,3), name = "jerry minimax")
+    agentB = Agent((3,3), name = "judy minimax")
+    '''
+
     '''
     agentA = None
     agentB = None
     '''
-    '''
+    
     agentA = Agent((3,3), name = "joe")
     agentB = None
-    '''
+    
     
 
     winner = play(state, agentA, agentB)
